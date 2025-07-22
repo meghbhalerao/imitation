@@ -180,8 +180,8 @@ def get_local_version(version: "ScmVersion", time_format="%Y%m%d") -> str:
 setup(
     cmdclass={"install": InstallCommand},
     name="imitation",
-    use_scm_version={"local_scheme": get_local_version, "version_scheme": get_version},
-    setup_requires=["setuptools_scm"],
+    # use_scm_version={"local_scheme": get_local_version, "version_scheme": get_version},
+    # setup_requires=["setuptools_scm"],
     description="Implementation of modern reward and imitation learning algorithms.",
     long_description=get_readme(),
     long_description_content_type="text/markdown",
