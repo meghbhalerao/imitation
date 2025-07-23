@@ -15,8 +15,11 @@ from typing import (
 
 import torch.utils.data as th_data
 from stable_baselines3.common import policies
+import sys
 
-from imitation.data import rollout, types
+from imitation.data import rollout
+from packages.imitation.src.imitation.data import types # doing this import for type consistency across the codebase
+from imitation.data import types as internal_types
 from imitation.util import logger as imit_logger
 from imitation.util import util
 
@@ -210,6 +213,8 @@ class _WrappedDataLoader:
                 `self.expected_batch_size`.
         """
         for batch in self.data_loader:
+            print(batch)
+            print("Expected batch size is ", self.expected_batch_size)
             if len(batch["obs"]) != self.expected_batch_size:
                 raise ValueError(
                     f"Expected batch size {self.expected_batch_size} "
@@ -250,6 +255,7 @@ def make_data_loader(
     if batch_size <= 0:
         raise ValueError(f"batch_size={batch_size} must be positive.")
 
+
     if isinstance(transitions, Iterable):
         # Inferring the correct type here is difficult with generics.
         (
@@ -258,11 +264,12 @@ def make_data_loader(
         ) = util.get_first_iter_element(  # type: ignore[assignment]
             transitions,
         )
-        if isinstance(first_item, types.Trajectory):
+
+        if isinstance(first_item, (types.Trajectory, types.TrajectoryWithRew)):
             transitions = cast(Iterable[types.Trajectory], transitions)
             transitions = rollout.flatten_trajectories(list(transitions))
 
-    if isinstance(transitions, types.TransitionsMinimal):
+    if isinstance(transitions, (internal_types.TransitionsMinimal, internal_types.Transitions)):
         if len(transitions) < batch_size:
             raise ValueError(
                 f"Number of transitions in `demonstrations` {len(transitions)} "

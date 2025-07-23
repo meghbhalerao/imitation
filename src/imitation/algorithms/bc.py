@@ -24,6 +24,7 @@ import numpy as np
 import torch as th
 import tqdm
 from stable_baselines3.common import policies, torch_layers, utils, vec_env
+import sys
 
 from imitation.algorithms import base as algo_base
 from imitation.data import rollout, types
@@ -331,6 +332,8 @@ class BC(algo_base.DemonstrationAlgorithm):
             demonstrations=demonstrations,
             custom_logger=custom_logger,
         )
+
+
         self._bc_logger = BCLogger(self.logger)
 
         self.action_space = action_space
@@ -373,6 +376,7 @@ class BC(algo_base.DemonstrationAlgorithm):
         return self._policy
 
     def set_demonstrations(self, demonstrations: algo_base.AnyTransitions) -> None:
+
         self._demo_data_loader = algo_base.make_data_loader(
             demonstrations,
             self.minibatch_size,
